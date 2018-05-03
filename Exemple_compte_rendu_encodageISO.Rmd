@@ -1,0 +1,93 @@
+---
+title: "TP de Probabilit?s"
+author: "Ir?ne Gannaz"
+date: "2017-2018"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+
+Ceci est un exemple de document fait avec Rmarkdown. Je vous conseille de l'utiliser pour votre compte-rendu de TP. Pour ex?cuter un .Rmd, utiliser le bouton 'Knit' de Rstudio.
+
+
+#Partie 1.
+
+##Question 1
+
+On peut mettre du code qui sera ex?cut? mais qui n'aparaitra pas dans le compte rendu.
+
+```{r setup, include=FALSE}
+library(randtoolbox)
+source('generateurs.R')
+
+sMT <- 2504
+Nsimu <- 1000
+Nrepet <- 20
+```
+
+Ensuite on peut aussi mettre du code qui appara?t dans le compte-rendu. 
+```{r}
+sob <- Sobol(Nsimu,Nrepet)
+mt <- MersenneTwister(Nsimu,Nrepet,sMT)$x
+
+par(mfrow=c(1,2))
+hist(mt[,1],xlab='',main='Mersenne Twister')
+hist(sob[,1],xlab='',main='Sobol')
+
+(bit_mt <- binary(mt[1,1]))
+```
+
+
+Comme vous pouvez le voir, les retours num?riques de R ainsi que les sorties graphiques sont int?gr?s dans le compte-rendu.
+
+##Quelques plus pour la mise en forme
+
+Il est possible de mettre des mots *en italique* ou **en gras**.
+On peut ?galement faire des listes :
+
+* Item 1 
+
+* Item 2 
+
+    + sub-item 1 
+
+    + sub-item 2 
+
+Et des tableaux :
+
+PermiÃ¨re colonne | DeuxiÃ¨me colonne 
+------------- | ------------- 
+a    | x        
+b        | y        
+
+Ou mettre des formules : $Aire = \pi\,r^{2}$.
+
+###Remarque
+Rmarkdown fait gagner du temps pour les compte-rendus et permet d'int?grer plus facilement des parties de code quand on le souhaite. Toutefois, je vous conseille d'avoir un fichier .R dans lequel vous ne mettez que du code et d'int?grer celui-ci dans le .Rmd lorsque vous obtenez des r?sultats. Faites les commentaires au fur et ? mesure et n'attendez pas la derni?re heure !
+
+##Test
+
+```{r}
+hist(RANDU(1000, 200))
+```
+
+On remarque que les valeurs que produit l'algorithme RANDU reviennent de manière homogène.
+
+```{r}
+hist(StandardMinimal(1000, 200))
+```
+
+On remarque que la fréquence des valeurs produites par l'algorithme StandardMinimal sont plus disparates. En effet, elles reviennent de manière plus inégale.
+
+```{r}
+mt = MersenneTwister(1000, 1, 200)
+hist(mt$x[,1], main="MersenneTwister")
+```
+```{r}
+sob <- Sobol(1000,1)
+hist(sob,xlab='',main='Sobol')
+```
+
+On remarque que les fréquences d'apparition des valeurs retournées sont homogènes exceptées pour celles supérieures à 2.0e+09. En effet, pour 1000 valeurs générées, la fréquence d'apparition est en moyenne de 100 sauf la dernière qui est de 70
