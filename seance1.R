@@ -1,5 +1,5 @@
 # au prealable, vous devez executer l'instruction suivante
-# install.packages('randtoolbox')
+install.packages('randtoolbox')
 
 library(randtoolbox)
 source('generateurs.R')

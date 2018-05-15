@@ -1,16 +1,12 @@
 ---
 title: "TP de Probabilit?s"
-author: "Ir?ne Gannaz"
-date: "2017-2018"
+author: "Christophe ETIENNE | Lynn GHANDOUR | Mustafa Corekci"
+date: "16 mai 2018"
 output:
   html_document:
     df_print: paged
+  pdf_document: default
 ---
-
-
-
-Ceci est un exemple de document fait avec Rmarkdown. Je vous conseille de l'utiliser pour votre compte-rendu de TP. Pour ex?cuter un .Rmd, utiliser le bouton 'Knit' de Rstudio.
-
 
 #Partie 1.
 
@@ -67,27 +63,118 @@ Ou mettre des formules : $Aire = \pi\,r^{2}$.
 ###Remarque
 Rmarkdown fait gagner du temps pour les compte-rendus et permet d'int?grer plus facilement des parties de code quand on le souhaite. Toutefois, je vous conseille d'avoir un fichier .R dans lequel vous ne mettez que du code et d'int?grer celui-ci dans le .Rmd lorsque vous obtenez des r?sultats. Faites les commentaires au fur et ? mesure et n'attendez pas la derni?re heure !
 
-##Test
+##Question 1.
+  
+  Nous avons implémentés les fonctions RANDU et StandardMinimal, voici les résultats obtenus pour une séquence de taille k=10 et une graine graine=215 :
 
 ```{r}
-hist(RANDU(1000, 200))
+RANDU(10, 215)
 ```
-
-On remarque que les valeurs que produit l'algorithme RANDU reviennent de manière homogène.
 
 ```{r}
-hist(StandardMinimal(1000, 200))
+StandardMinimal(10, 215)
 ```
 
-On remarque que la fréquence des valeurs produites par l'algorithme StandardMinimal sont plus disparates. En effet, elles reviennent de manière plus inégale.
+##Question 2. Test Visuel
+
+### Question 2.1.
+
+Pour chaque générateur, nous avons tracé les histogrammes pour une suite de k=1000 valeurs et une même graine égale à 200.
+
+```{r}
+hist(RANDU(1000, 200),main = "Histogramme de RANDU(1000,200)", xlab = "valeur aléatoire générée", ylab="fréquence")
+```
+
+On remarque que les valeurs que produit l'algorithme RANDU reviennent de manière homogène. En effet, on peuyt retrouver pour chaque intervalle de valeurs une fréquence d'appartion supérieure à 80 excepté pour le dernier où celle-ci est légérement inférieure.
+
+```{r}
+hist(StandardMinimal(1000, 200),main = "Histogramme de StandardMinimal(1000,200)", xlab = "valeur aléatoire générée", ylab="fréquence")
+```
+
+On remarque que la fréquence des valeurs produites par l'algorithme StandardMinimal sont plus disparates. Nous pouvons constater qu'elles reviennent de manière plus inégale. La différence entre l'intervalle de valeur ayant la plus grande fréquence (~120) et celui ayant la plus petite (~70) est d'environ 50.
 
 ```{r}
 mt = MersenneTwister(1000, 1, 200)
-hist(mt$x[,1], main="MersenneTwister")
-```
-```{r}
-sob <- Sobol(1000,1)
-hist(sob,xlab='',main='Sobol')
+hist(mt$x[,1], main="Histogramme de MersenneTwister(1000,1,200)", xlab = "valeur aléatoire générée", ylab="fréquence")
 ```
 
-On remarque que les fréquences d'apparition des valeurs retournées sont homogènes exceptées pour celles supérieures à 2.0e+09. En effet, pour 1000 valeurs générées, la fréquence d'apparition est en moyenne de 100 sauf la dernière qui est de 70
+De même que pour StandardMinimal, les valeurs pour MersenneTwister sont plûtot disparates. Nous observons un intervalle de valeur dont la fréquence est beaucoup plus faible que les autres (~60). Pour les autres intervalles, la différence de fréquence est moins grande, il y a une différence maximum de 25. 
+
+A présent, on s'intéresse aux valeurs générées de la suite de Sobol.
+
+```{r}
+sob <- Sobol(1000,1)
+hist(sob, main="Histogramme de la suite de Sobol (1000,1)",  xlab = "valeur aléatoire générée", ylab="fréquence")
+```
+
+On remarque que les fréquences d'apparition des valeurs retournées sont homogènes voir quasi-identique exceptées pour celles supérieures à 2.0e+09. En effet, pour 1000 valeurs générées, la fréquence d'apparition est en moyenne de 100 sauf la dernière qui est de 70. Ceci est expliqué car il s'agit d'une suite.
+
+### Question 2.2. 
+
+Pour chaque algorithme, nous avons tracé la valeur obtenue en fonction de la valeur précédente. Nous avons effectué cela grâce à un vecteur u de taille n.
+
+```{r}
+uRandu <- RANDU(1000,20)
+plot(uRandu[1:(n-1)],uRandu[2:n], main = "Valeur obtenue en fonction de la valeur précédente pour RANDU", xlab = "valeur courante", ylab = "valeur suivante")
+```
+
+Malgré qu'on est observé que la fréquence des valeurs était homogène, on remarque que l'ordre d'apparition de ses valeurs sont bien aléatoires. En effet, pour une même valeur, la valeur suivante est très variable. Pour une même valeur d'abscisse, les valeurs suivantes sont également réparties le long de l'axe des ordonnées.
+
+```{r}
+uStm <- StandardMinimal(1000,20)
+plot(uStm[1:(n-1)],uStm[2:n], main = "Valeur obtenue en fonction de la valeur précédente pour StandardMinimal", xlab = "valeur courante", ylab = "valeur suivante")
+```
+
+Nous pouvons tirer les mêmes conclusions que pour le tracé de RANDU concernant la génération aléatoires des valeurs, bien que la fréquence d'apparition était plus disparate.
+
+```{r}
+uMt <- MersenneTwister(n, 1, 200)
+plot(uMt$x[1:(n-1)],uMt$x[2:n], main = "Valeur obtenue en fonction de la valeur précédente pour MersenneTwister", xlab = "valeur courante", ylab = "valeur suivante")
+```
+
+Pareil que les deux générateurs précédents, la génération des valeurs pour celui-ci est bien aléatoire. La fréquence des valeurs était disparate, néanmoins leur apparition reste hasardeuse.
+
+```{r}
+uSob <- Sobol(n,1)
+plot(uSob[1:(n-1)],uSob[2:n], main = "Valeur obtenue en fonction de la valeur précédente pour MersenneTwister", xlab = "valeur courante", ylab = "valeur suivante")
+```
+
+Nous observons pour la suite de Sobol, que les valeurs ne sont pas dispersées.On retrouve des droites obliques respectant une fonction affine. Ceci nous permet de voir la dépendance entre la valeur actuelle et la valeur suivante ce qui est logique étant donné qu'il s'agit d'une suite. Les valeurs ne sont donc pas générées de façon aléatoire.
+
+## Question 3. Test de fréquence monobits
+
+Pour vérifier que le caractère aléatoire des générateurs, nous avons implémentés une fonction permettant de calculer la fréquence de 1 et de 0 dans une suite binaire. A partir de celle-ci, nous avons effectué des tests dont les résultats sont présentés ci-dessous.
+Pour chaque générateur, nous avons calculé 100 fois la Pvaleur. Pour cela, nous avons pris à chaque fois une suite de k=1000 valeurs et une graine toujours différente des autres. Nous avons ensuite lancé la fonction Frequency avec le vecteur obtenue du générateur précédent et le nombre de bits pris en compte par ce dernier.
+Pour exploiter ces résultats, nous avons décidé de les présenter sous forme d'histogramme.
+
+```{r}
+hist(QualiteGenerateur(1), main = "Résultat du test fréquence momobits pour RANDU", xlab = "Pvaleur obtenue", ylab="fréquence", breaks=100)
+```
+
+Nous observons grâce à l'histogramme que 70% des Pvaleurs sont inférieures à 0.01.  Nous pouvons fortement assumé que les séquences générées par RANDU ne sont pas aléatoires.
+
+```{r}
+hist(QualiteGenerateur(2), main = "Résultat du test fréquence momobits pour StandardMinimum", xlab = "Pvaleur obtenue", ylab="fréquence", breaks = 100)
+```
+
+Nous observons une fréquence maximum d'apparition de la  même Pvaleur égale à 5. Celles-ci ont une valeur différente et sont majoritairement au-dessus de 1% (99 % des valeurs). Cela nous permet de conconlure, au sens de ce test seulement, que la séquence générée par StandardMinimal est aléatoire.
+
+```{r}
+hist(QualiteGenerateur(3), main = "Résultat du test fréquence momobits pour MersenneTwister", xlab = "Pvaleur obtenue", ylab="fréquence", breaks = 100)
+```
+
+```{r}
+hist(QualiteGenerateur(4), main = "Résultat du test fréquence momobits pour Sobol", xlab = "Pvaleur obtenue", ylab="fréquence", breaks=100)
+```
+
+De même que pour StandardMinimal, les Pvaleurs obtenues sont très éparpillées et majoritairement supérieures à 1% (98% des valeurs). Par conséquent, au sens de ce test, nous pouvons affirmer que la suite de sobol génére une séquence aléatoire bien que qu'avec le test visuel, nous en avons conclut le contraire.
+
+## Question 4. Test des runs
+
+Nous implémentons une fonction permettant de calculer la Pvaleur à partir des "runs" (suite consécutives de 0 ou de 1) d'une séquence de bits.
+De même que pour le test de fréquence monombits, pour chaque générateur, nous avons calculé 100 fois la Pvaleur. Nous avons gardé les mêmes caractéristiques pour ce test. Nous avons ensuite lancé la fonction Runs avec le vecteur obtenue du générateur précédent et le nombre de bits pris en compte par ce dernier.
+Pour exploiter ces résultats, nous avons gardé la même présentation sous forme d'histogramme.
+
+```{r}
+hist(testRuns(1), main = "Résultat du test des runs pour RANDU", xlab = "Pvaleur obtenue", ylab="fréquence", breaks=100)
+```
