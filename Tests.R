@@ -1,5 +1,6 @@
 library(randtoolbox)
 source('generateurs.R')
+source('Lois_de_proba.R')
 
 TestQu1 <- function ()
 {
@@ -63,15 +64,16 @@ QualiteGenerateur <- function(nomGenerateur)
     }
   }
   else if (nomGenerateur == 3){
+    
     for (i in 1:100){
-      val <- Sobol(1000, 1)
-      tabPval[i] <- Frequency(val, 31)
+      val <- MersenneTwister(1000,1, graine = tab[i])
+      tabPval[i] <- Frequency(val$x[,1], 32)
     }
   }
   else {
     for (i in 1:100){
-      val <- MersenneTwister(1000,1, graine = tab[i])
-      tabPval[i] <- Frequency(val$x[,1], 32)
+      val <- Sobol(1000, 1)
+      tabPval[i] <- Frequency(val, 31)
     }
   }
   return (tabPval)
@@ -125,15 +127,58 @@ testRuns <- function(nomGenerateur)
   }
   else if (nomGenerateur == 3){
     for (i in 1:100){
-      val <- Sobol(1000, 1)
-      tabPval[i] <- Runs(val, 31)
-    }
-  }
-  else {
-    for (i in 1:100){
       val <- MersenneTwister(1000,1, graine = tab[i])
       tabPval[i] <- Runs(val$x[,1], 32)
     }
   }
+  else {
+    
+    for (i in 1:100){
+      val <- Sobol(1000, 1)
+      tabPval[i] <- Runs(val, 31)
+    }
+  }
   return (tabPval)
+}
+
+TestOrdre <- function(nomGenerateur)
+{
+  tabPval <- array(0, 100)
+  tab <- sample(1:2000,100)
+  if (nomGenerateur==1){
+    for (i in 1:100){
+      val <- RANDU(k = 1000, graine = tab[i])
+      tabPval[i] <- order.test(as.vector(val), 4, FALSE)$p.value
+    }
+  }
+  else if (nomGenerateur == 2) {
+    for (i in 1:100){
+      val <- StandardMinimal(k = 1000, graine = tab[i])
+      tabPval[i] <- order.test(as.vector(val), 4, FALSE)$p.value
+    }
+  }
+  else if (nomGenerateur == 3){
+    for (i in 1:100){
+      val <- MersenneTwister(1000,1, graine = tab[i])
+      tabPval[i] <- order.test(as.vector(val$x[,1]), 4, FALSE)$p.value
+    }
+  }
+  else {
+    for (i in 1:100){
+      val <- Sobol(1000, 1)
+      tabPval[i] <- order.test(as.vector(val), 4, FALSE)$p.value
+    }
+  }
+  return (tabPval)
+}
+
+# Demander pour Sobol et question 6 pour para (n et p) + x ?
+TestQu6 <- function (u) {
+  k <- 0
+  somme <- 0
+  while(u>somme)
+  {
+    k <- k + 1
+    somme <- somme + LoiBinomiale(20,0.5)
+  }
 }

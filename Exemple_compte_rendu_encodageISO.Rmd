@@ -114,6 +114,7 @@ On remarque que les fréquences d'apparition des valeurs retournées sont homogène
 Pour chaque algorithme, nous avons tracé la valeur obtenue en fonction de la valeur précédente. Nous avons effectué cela grâce à un vecteur u de taille n.
 
 ```{r}
+n <- 1000
 uRandu <- RANDU(1000,20)
 plot(uRandu[1:(n-1)],uRandu[2:n], main = "Valeur obtenue en fonction de la valeur précédente pour RANDU", xlab = "valeur courante", ylab = "valeur suivante")
 ```
@@ -121,6 +122,7 @@ plot(uRandu[1:(n-1)],uRandu[2:n], main = "Valeur obtenue en fonction de la valeu
 Malgré qu'on est observé que la fréquence des valeurs était homogène, on remarque que l'ordre d'apparition de ses valeurs sont bien aléatoires. En effet, pour une même valeur, la valeur suivante est très variable. Pour une même valeur d'abscisse, les valeurs suivantes sont également réparties le long de l'axe des ordonnées.
 
 ```{r}
+n <- 1000
 uStm <- StandardMinimal(1000,20)
 plot(uStm[1:(n-1)],uStm[2:n], main = "Valeur obtenue en fonction de la valeur précédente pour StandardMinimal", xlab = "valeur courante", ylab = "valeur suivante")
 ```
@@ -128,6 +130,7 @@ plot(uStm[1:(n-1)],uStm[2:n], main = "Valeur obtenue en fonction de la valeur pr
 Nous pouvons tirer les mêmes conclusions que pour le tracé de RANDU concernant la génération aléatoires des valeurs, bien que la fréquence d'apparition était plus disparate.
 
 ```{r}
+n <- 1000
 uMt <- MersenneTwister(n, 1, 200)
 plot(uMt$x[1:(n-1)],uMt$x[2:n], main = "Valeur obtenue en fonction de la valeur précédente pour MersenneTwister", xlab = "valeur courante", ylab = "valeur suivante")
 ```
@@ -135,8 +138,9 @@ plot(uMt$x[1:(n-1)],uMt$x[2:n], main = "Valeur obtenue en fonction de la valeur 
 Pareil que les deux générateurs précédents, la génération des valeurs pour celui-ci est bien aléatoire. La fréquence des valeurs était disparate, néanmoins leur apparition reste hasardeuse.
 
 ```{r}
+n <- 1000
 uSob <- Sobol(n,1)
-plot(uSob[1:(n-1)],uSob[2:n], main = "Valeur obtenue en fonction de la valeur précédente pour MersenneTwister", xlab = "valeur courante", ylab = "valeur suivante")
+plot(uSob[1:(n-1)],uSob[2:n], main = "Valeur obtenue en fonction de la valeur précédente pour la suite de Sobol", xlab = "valeur courante", ylab = "valeur suivante")
 ```
 
 Nous observons pour la suite de Sobol, que les valeurs ne sont pas dispersées.On retrouve des droites obliques respectant une fonction affine. Ceci nous permet de voir la dépendance entre la valeur actuelle et la valeur suivante ce qui est logique étant donné qu'il s'agit d'une suite. Les valeurs ne sont donc pas générées de façon aléatoire.
@@ -154,7 +158,7 @@ hist(QualiteGenerateur(1), main = "Résultat du test fréquence momobits pour RAND
 Nous observons grâce à l'histogramme que 70% des Pvaleurs sont inférieures à 0.01.  Nous pouvons fortement assumé que les séquences générées par RANDU ne sont pas aléatoires.
 
 ```{r}
-hist(QualiteGenerateur(2), main = "Résultat du test fréquence momobits pour StandardMinimum", xlab = "Pvaleur obtenue", ylab="fréquence", breaks = 100)
+hist(QualiteGenerateur(2), main = "Résultat du test fréquence momobits pour StandardMinimal", xlab = "Pvaleur obtenue", ylab="fréquence", breaks = 100)
 ```
 
 Nous observons une fréquence maximum d'apparition de la  même Pvaleur égale à 5. Celles-ci ont une valeur différente et sont majoritairement au-dessus de 1% (99 % des valeurs). Cela nous permet de conconlure, au sens de ce test seulement, que la séquence générée par StandardMinimal est aléatoire.
@@ -163,11 +167,12 @@ Nous observons une fréquence maximum d'apparition de la  même Pvaleur égale à 5.
 hist(QualiteGenerateur(3), main = "Résultat du test fréquence momobits pour MersenneTwister", xlab = "Pvaleur obtenue", ylab="fréquence", breaks = 100)
 ```
 
+De même que pour StandardMinimal, les Pvaleurs obtenues sont très éparpillées et majoritairement supérieures à 1% (98% des valeurs). Par conséquent, au sens de ce test, nous pouvons affirmer que MersenneTwister génére une séquence aléatoire.
+
 ```{r}
-hist(QualiteGenerateur(4), main = "Résultat du test fréquence momobits pour Sobol", xlab = "Pvaleur obtenue", ylab="fréquence", breaks=100)
+hist(QualiteGenerateur(4), main = "Résultat du test fréquence monobits pour la suite de Sobol", xlab = "Pvaleur obtenue", ylab="fréquence", breaks=100)
 ```
 
-De même que pour StandardMinimal, les Pvaleurs obtenues sont très éparpillées et majoritairement supérieures à 1% (98% des valeurs). Par conséquent, au sens de ce test, nous pouvons affirmer que la suite de sobol génére une séquence aléatoire bien que qu'avec le test visuel, nous en avons conclut le contraire.
 
 ## Question 4. Test des runs
 
@@ -178,3 +183,51 @@ Pour exploiter ces résultats, nous avons gardé la même présentation sous forme d
 ```{r}
 hist(testRuns(1), main = "Résultat du test des runs pour RANDU", xlab = "Pvaleur obtenue", ylab="fréquence", breaks=100)
 ```
+
+En observant l'histogramme, nous apercevons que la quasi-totalité des Pvaleur obtenues sont infèrieures à 0.01. Nous pouvons conclure que les séquences générées ne sont pas aléatoires.
+
+```{r}
+hist(testRuns(2), main = "Résultat du test des runs pour StandardMinimal", xlab = "Pvaleur obtenue", ylab="fréquence", breaks=100)
+```
+
+Pour StandardMinimal, nous n'avons aucune valeur dépassant les 0.03%. Nous pouvons donc affirmer, sans aucun doute pour ce test, que les séquences générées sont de mauvaise qualité.
+
+```{r}
+hist(testRuns(3), main = "Résultat du test des runs pour MersenneTwister", xlab = "Pvaleur obtenue", ylab="fréquence", breaks=100)
+```
+
+Nous pouvons apercevoir sur l'histogramme que toutes les Pvaleurs générées sont très inférieures à 0.1%. Pour ce test, nous en déduisons donc que les séquences retournées par MersenneTwister ne sont pas aléatoires bien qu'avec les tests précédents, nous en avons conclut le contraire.
+
+```{r}
+hist(testRuns(4), main = "Résultat du test des runs pour la suite de Sobol", xlab = "Pvaleur obtenue", ylab="fréquence", breaks=100)
+```
+
+
+
+## Question 5. Test d'ordre
+
+Pour le test d'ordre, nous utilisons directement la fonction donnée dans le paquet randtoolbox. Nous testons avec chaque générateur cette fonction, en utilisant le tableau retourné, converti en vecteur, comme paramètre u. Nous effectuons ce test avec une séquence k=1000 et pour 100 initialisations différentes pour chaque générateur (100 valeurs de u différentes dont la graine est générée aléatoirement et différente à chaque fois).
+
+```{r}
+hist(TestOrdre(1), main = "Résultat du test d'ordre pour RANDU", xlab = "Pvaleur obtenue", ylab="fréquence", breaks=100)
+```
+
+Pour ce premier histogramme, les Pvaleurs obtenues sont très disparates. Nous observons une minorité de valeurs inférieures à 1% (~10%). Nous ne pouvons pas rejeté que les séquences u générées par RANDU sont issus d'une loi uniforme. Donc, pour ce test, nous ne pouvons pas établir d'affirmation concernant le caractère aléatoire des séquences générées par RANDU.
+
+```{r}
+hist(TestOrdre(2), main = "Résultat du test d'ordre pour StandardMinimal", xlab = "Pvaleur obtenue", ylab="fréquence", breaks=100)
+```
+
+Pareillement que pour le test avec RANDU, les Pvaleurs sont dispersées entre 0 et 1. Nous avons également ~10% des valeurs inférieurs à 1%. Nous pouvons alors effectué la même conclusion que pour RANDU. Nous ne pouvons pas conclure que les séquences u générées par StandardMinimal sont issues d'une loi uniforme. Il n'est donc également pas possible de conclure sur le caractère aléatoire de cette séquence.
+
+```{r}
+hist(TestOrdre(3), main = "Résultat du test d'ordre pour MersenneTwister", xlab = "Pvaleur obtenue", ylab="fréquence", breaks=100)
+```
+
+Nous pouvons aussi observé ici une grande majorité de Pvaleurs supérieures à 1% (~10%). Comme les deux générateurs précédents, nous ne pouvons pas rejeté l'hypothése que les observations de u sont issues d'une loi uniforme. 
+
+```{r}
+hist(TestOrdre(4), main = "Résultat du test d'ordre pour la suite de Sobol", xlab = "Pvaleur obtenue", ylab="fréquence", breaks=100)
+```
+
+# Partie 2
